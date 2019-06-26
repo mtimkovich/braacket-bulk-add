@@ -1,3 +1,4 @@
 node_modules
-config
+config/private.json
 example.png
+mtvmelee.txt
