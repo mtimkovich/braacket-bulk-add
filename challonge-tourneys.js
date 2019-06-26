@@ -32,7 +32,6 @@ let tournamentUrls = [];
 
     await next.click();
     await page.waitForSelector('.tournament-block', {visible: true});
-    await page.screenshot({path: 'example.png'});
     pageNum++;
   }
 
