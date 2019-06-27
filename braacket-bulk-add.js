@@ -52,6 +52,9 @@ async function addTournament(page, league, url) {
   // Import all players into the league.
   await page.click('.my-table-checkbox-check_all');
 
+  // TODO: This method (as is) will miss some players. This *should*
+  // click 'Save and next page' if it's not disabled.
+
   // Save changes.
   await Promise.all([
       page.click('button[data-redirect_value="default"]'),
