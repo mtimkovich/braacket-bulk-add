@@ -6,7 +6,7 @@ const puppeteer = require('puppeteer');
 (async () => {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
-  await page.goto('https://www.garpr.com/#/googlemtv/tournaments', {
+  await page.goto('https://www.garpr.com/#/norcal/tournaments', {
     waitUntil: 'networkidle0'
   });
 
