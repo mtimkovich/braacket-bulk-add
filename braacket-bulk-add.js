@@ -30,8 +30,17 @@ function extractTournamentIds(url) {
   return {subdomain: match[1], id: match[2]};
 }
 
+function smashGgId(url) {
+  const match = url.match('/tournament/([^/]+)/events/([^/]+)');
+  return {
+    'id': match[1],
+    'event': match[2],
+  };
+}
+
 async function addTournament(page, league, url) {
   await page.goto(`https://braacket.com/tournament/import/challonge?league=${league}`);
+  // TODO: Check if challonge or smash.gg.
   const tournament = extractTournamentIds(url);
 
   await page.type('#tournament', tournament.id);
