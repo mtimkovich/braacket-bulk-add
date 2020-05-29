@@ -1,0 +1,24 @@
+{
+  "name": "braacket-bulk-add",
+  "version": "1.0.0",
+  "description": "Bulk import tournaments into Braacket.",
+  "main": "braacket-bulk-add.js",
+  "dependencies": {
+    "config": "^3.3.1",
+    "puppeteer": "^3.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mtimkovich/braacket-bulk-add.git"
+  },
+  "author": "Max Timkovich",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mtimkovich/braacket-bulk-add/issues"
+  },
+  "homepage": "https://github.com/mtimkovich/braacket-bulk-add#readme"
+}
