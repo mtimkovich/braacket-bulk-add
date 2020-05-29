@@ -47,7 +47,7 @@ async function addTournament(page, league, url) {
     await page.type('#tournament', tournament.id);
 
     if (tournament.subdomain) {
-      await page.type('#subdomain', tournament.subdomain);
+      await page.type('#organization_id', tournament.subdomain);
     }
   } else if (url.includes('smash.gg')) {
     await page.goto(`https://braacket.com/tournament/import/smashgg?league=${league}`);
