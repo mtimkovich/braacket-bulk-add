@@ -19,11 +19,13 @@ async function login(page, credentials) {
         page.waitForNavigation(),
     ]);
   } catch (e) {
-    console.log('Login failed. Incorrect credentials?');
+    return false;
   }
+
+  return true;
 }
 
-function extractTournamentIds(url) {
+function challongeId(url) {
   const re = /(\w+)?\.?challonge\.com\/([^/]+)/g;
   const match = re.exec(url);
 
@@ -33,20 +35,28 @@ function extractTournamentIds(url) {
 function smashGgId(url) {
   const match = url.match('/tournament/([^/]+)/events/([^/]+)');
   return {
-    'id': match[1],
-    'event': match[2],
+    id: match[1],
+    event: match[2],
   };
 }
 
 async function addTournament(page, league, url) {
-  await page.goto(`https://braacket.com/tournament/import/challonge?league=${league}`);
-  // TODO: Check if challonge or smash.gg.
-  const tournament = extractTournamentIds(url);
+  if (url.includes('challonge.com')) {
+    await page.goto(`https://braacket.com/tournament/import/challonge?league=${league}`);
+    const tournament = challongeId(url);
+    await page.type('#tournament', tournament.id);
 
-  await page.type('#tournament', tournament.id);
-
-  if (tournament.subdomain) {
-    await page.type('#subdomain', tournament.subdomain);
+    if (tournament.subdomain) {
+      await page.type('#subdomain', tournament.subdomain);
+    }
+  } else if (url.includes('smash.gg')) {
+    await page.goto(`https://braacket.com/tournament/import/smashgg?league=${league}`);
+    const tournament = smashGgId(url);
+    await page.type('#tournament', tournament.id);
+    await page.type('#event', tournament.event);
+  } else {
+    console.log(`Invalid tournament: ${url}`);
+    return;
   }
 
   // Set relevant settings.
@@ -58,11 +68,28 @@ async function addTournament(page, league, url) {
       page.waitForNavigation(),
   ]);
 
-  // Import all players into the league.
-  await page.click('.my-table-checkbox-check_all');
+  // Increase pagination size.
+  await Promise.all([
+    page.select('select#search-row_numbers', '200'),
+    page.waitForNavigation(),
+  ]);
 
-  // TODO: This method (as is) will miss some players. This *should*
-  // click 'Save and next page' if it's not disabled.
+  // Import all players into the league.
+  while (true) {
+    await page.click('.my-table-checkbox-check_all');
+
+    // Check if there are more pages to go to.
+    const next = await page.$('button[data-redirect_value="page_next"]:not([disabled])')
+
+    if (!next) {
+      break;
+    }
+
+    await Promise.all([
+      next.click(),
+      page.waitForNavigation(),
+    ]);
+  }
 
   // Save changes.
   await Promise.all([
@@ -72,8 +99,7 @@ async function addTournament(page, league, url) {
 }
 
 // This is bad, but that's ok.
-const tournamentUrls = fs.readFileSync(process.argv[2])
-  .toString().match(/^.+$/gm);
+const tournamentUrls = fs.readFileSync(process.argv[2]).toString().match(/^.+$/gm);
 
 (async () => {
   const credentials = config.get('credentials');
@@ -82,7 +108,12 @@ const tournamentUrls = fs.readFileSync(process.argv[2])
   const page = await browser.newPage();
   await page.goto('https://braacket.com');
 
-  await login(page, credentials);
+  const success = await login(page, credentials);
+
+  if (!success) {
+    console.log('Login failed. Incorrect credentials?');
+    process.exit(1);
+  }
 
   for (const url of tournamentUrls) {
     console.log(`Adding: ${url}`);
