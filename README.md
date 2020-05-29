@@ -5,7 +5,7 @@ Bulk import tournaments into [Braacket](https://braacket.com). Supports both Cha
 ## Install
 
 ```
-yarn install
+npm install
 ```
 
 ### Dependencies
