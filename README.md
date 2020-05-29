@@ -1,9 +1,6 @@
 # Braacket Bulk Add
 
-Bulk import tournaments into [Braacket](https://braacket.com).
-
-It currently only handles Challonge brackets, but could probably also handle
-Smash.gg brackets without too much effort.
+Bulk import tournaments into [Braacket](https://braacket.com). Supports both Challonge and Smash.gg brackets.
 
 ## Install
 
@@ -23,7 +20,7 @@ Fill out `config/default.json` with your Braacket credentials and league name.
 node braacket-bulk-add.js FILE
 ```
 
-Where `FILE` is a newline-separated list of Challonge URLs.
+Where `FILE` is a newline-separated list of tournament URLs.
 
 ### challonge-tourneys.js
 
