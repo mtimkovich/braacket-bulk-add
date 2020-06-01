@@ -2,6 +2,8 @@
 
 Bulk import tournaments into [Braacket](https://braacket.com). Supports both Challonge and Smash.gg brackets.
 
+There is no Braacket API, so this automates a headless browser that clicks through adding tournaments. It takes about 40 seconds per tournament.
+
 ## Install
 
 ```
